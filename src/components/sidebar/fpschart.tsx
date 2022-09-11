@@ -22,7 +22,7 @@ export const FPSChart = () => {
         if(canvasContext !== null) {
             drawGraph()
         }
-    }, [canvasContext])
+    }, [canvasContext, fpsHistory])
 
     const drawGraph = () => {
         canvasContext.fillStyle = 'white'
@@ -44,6 +44,13 @@ export const FPSChart = () => {
             canvasContext.stroke()
             canvasContext.strokeText(`${100 - (i * 20)}`,5, (i * 20) + 33)
         }
+        // Vertical lines
+        for(let i = 0; i < 9; i++) {
+            canvasContext.beginPath()
+            canvasContext.moveTo((i * 20) + 50, 130)
+            canvasContext.lineTo((i * 20) + 50, 135)
+            canvasContext.stroke()
+        }
         // Grid lines
         canvasContext.strokeStyle = "#dddddd"
         for(let i = 0; i < 10; i ++) {
@@ -52,6 +59,33 @@ export const FPSChart = () => {
             canvasContext.lineTo(230, (i * 10) + 30)
             canvasContext.stroke()
         }
+        // Plot the data
+        let fpsArray: number[] = new Array(10 - fpsHistory.length).fill(0)
+        fpsArray = fpsArray.concat(fpsHistory)
+        canvasContext.fillStyle = "blue"
+        canvasContext.strokeStyle = "blue"
+        canvasContext.beginPath()
+        fpsArray.forEach((fps, index) => {
+            canvasContext.fillRect(
+                (index * 20) + 29,
+                29 + (100 - fps),
+                3,
+                3
+            )
+            // Draw the line
+            if(index > 0) {
+                canvasContext.lineTo(
+                    (index * 20) + 30,
+                    30 + (100 - fps)
+                )
+            }
+            // Now move
+            canvasContext.moveTo(
+                (index * 20) + 30,
+                30 + (100 - fps)
+            )
+        })
+        canvasContext.stroke()
     }
 
     return <S.Container>

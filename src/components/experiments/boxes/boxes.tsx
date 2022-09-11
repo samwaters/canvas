@@ -64,8 +64,14 @@ export const Boxes = () => {
             const newX = shape.x + ((msSinceLastDraw * shape.speed.lr) * shape.direction.lr)
             const newY = shape.y + ((msSinceLastDraw * shape.speed.ud) * shape.direction.ud)
             // Are we out of bounds?
-            const newLRDirection = newX <= 0 || (newX + shape.size) >= 640 ? shape.direction.lr * -1 : shape.direction.lr
-            const newUDDirection = newY <= 0 || (newY + shape.size) >= 480 ? shape.direction.ud * -1 : shape.direction.ud
+            const newLRDirection =
+                newX <= 0 ? 1 :
+                (newX + shape.size) >= 640 ? -1 :
+                    shape.direction.lr
+            const newUDDirection =
+                newY <= 0 ? 1 :
+                (newY + shape.size) >= 480 ? -1 :
+                    shape.direction.ud
             // Update the shape
             shapeManager.updateShape(index, newX, newY, newLRDirection, newUDDirection)
             // Aaaand draw it
