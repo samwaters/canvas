@@ -13,6 +13,9 @@ module.exports = {
     },
     entry: {
         app: APP_DIR + '/index.tsx',
+        vendor: [
+            '@reduxjs/toolkit', '@redux-saga/core', 'react', 'react-dom', 'react-redux', 'react-router', 'redux', 'styled-components'
+        ]
     },
     mode: process.env.NODE_ENV || 'development',
     module: {
@@ -38,8 +41,10 @@ module.exports = {
     ],
     resolve: {
         alias: {
+            components: path.resolve(__dirname, 'src', 'components'),
+            sagas: path.resolve(__dirname, 'src', 'sagas'),
+            store: path.resolve(__dirname, 'src', 'store'),
             theme: path.resolve(__dirname, 'src', 'theme'),
-            utils: path.resolve(__dirname, 'src', 'utils'),
         },
         extensions: ['.css', '.js', '.jsx', '.json', '.scss', '.ts', '.tsx'],
         modules: ['node_modules'],

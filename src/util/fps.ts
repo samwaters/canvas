@@ -1,3 +1,6 @@
+import {store} from "../store";
+import { updateFPSAction } from "store/fps.store";
+
 export class FPS {
     private framesDrawn: number = 0
     private timerId: number = 0
@@ -12,7 +15,7 @@ export class FPS {
 
     start() {
         this.timerId = window.setInterval(() => {
-            document.getElementById("fps").innerText = `${this.framesDrawn}`
+            store.dispatch(updateFPSAction(this.framesDrawn))
             this.framesDrawn = 0
         }, 1000)
     }
