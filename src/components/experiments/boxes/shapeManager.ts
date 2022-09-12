@@ -13,59 +13,45 @@ interface Shape {
     y: number
 }
 
-const defaultShapes: Shape[] = [{
-    color: 'green',
-    direction: {
-        lr: 1,
-        ud: 1
-    },
-    size: 50,
-    speed: {
-        lr: 640 / 10000,
-        ud: 480 / 10000,
-    },
-    x: 10,
-    y: 10,
-}, {
-    color: 'red',
-    direction: {
-        lr: 1,
-        ud: 1
-    },
-    size: 75,
-    speed: {
-        lr: 640 / 8000,
-        ud: 480 / 8000,
-    },
-    x: 80,
-    y: 300,
-},{
-    color: 'blue',
-    direction: {
-        lr: 1,
-        ud: 1
-    },
-    size: 30,
-    speed: {
-        lr: 640 / 4000,
-        ud: 480 / 4000,
-    },
-    x: 250,
-    y: 400,
-}]
-
 export class ShapeManager {
     private shapes: Shape[] = []
 
     addDefaultShapes() {
-        this.shapes.push(defaultShapes[0])
-        this.shapes.push(defaultShapes[1])
-        this.shapes.push(defaultShapes[2])
+        this.shapes.push(
+            ShapeManager.createShape(10, 10, 50, "green", 10000)
+        )
+        this.shapes.push(
+            ShapeManager.createShape(80, 300, 75, "red", 8000)
+        )
+        this.shapes.push(
+            ShapeManager.createShape(250, 400, 30, "blue", 4000)
+        )
+        this.shapes.push(
+            ShapeManager.createShape(600, 10, 45, "yellow", 2000)
+        )
+        this.shapes.push(
+            ShapeManager.createShape(400, 100, 50, "purple", 7000)
+        )
     }
 
     addShape(shape: Shape) {
         this.shapes.push(shape)
     }
+
+    static createShape = (x: number, y: number, size: number, color: string, speed: number) => ({
+        color,
+        direction: {
+            lr: 1,
+            ud: 1
+        },
+        size,
+        speed: {
+            lr: 640 / speed,
+            ud: 480 / speed,
+        },
+        x,
+        y,
+    } as Shape)
 
     getShapes(): Shape[] {
         return this.shapes
