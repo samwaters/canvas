@@ -15,16 +15,32 @@ const S = {
         font-weight: bold;
       }
     `,
-    SidebarContainer: styled.div``
+    SidebarContainer: styled.div``,
+    Section: styled.div`
+        margin-bottom: 10px;
+    `,
+    SectionHeading: styled.h3`
+      background-color: #999fa5;
+      color: white;
+      padding: 5px 0 5px 10px;
+    `,
+    SectionInner: styled.div`
+        padding: 10px;
+    `
 }
 
 export const Sidebar = () => {
     const currentFPS = useSelector((state: RootState) => state.fps.currentFPS)
     return <S.SidebarContainer>
-        <FPSChart />
-        <S.CurrentFPS>
-            Current FPS: <span>{currentFPS}</span>
-        </S.CurrentFPS>
+        <S.Section>
+            <S.SectionHeading>Frames Per Second</S.SectionHeading>
+            <S.SectionInner>
+                <FPSChart />
+                <S.CurrentFPS>
+                    Current FPS: <span>{currentFPS}</span>
+                </S.CurrentFPS>
+            </S.SectionInner>
+        </S.Section>
         <Routes>
             <Route path={RoutesList.BOXES} element={<BoxesControls />} />
         </Routes>

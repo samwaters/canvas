@@ -15,7 +15,7 @@ const S = {
     `
 }
 
-interface ExperimentWindow extends Window {
+export interface ExperimentWindow extends Window {
     boxesActive?: boolean
 }
 
