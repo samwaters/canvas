@@ -1,8 +1,11 @@
 import * as React from 'react'
 import styled from "styled-components";
-import {useEffect, useRef, useState} from "react";
-import {ShapeManager} from "components/experiments/boxes/shapeManager";
-import {FPS} from "../../../util/fps";
+import { useEffect, useRef } from "react";
+import { ShapeManager } from "components/experiments/boxes/shapeManager";
+import { FPS } from "../../../util/fps";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import { disable, enable } from "store/boxes.store";
 
 const S = {
     Canvas: styled.canvas`
@@ -15,34 +18,29 @@ const S = {
     `
 }
 
-export interface ExperimentWindow extends Window {
-    boxesActive?: boolean
-}
-
 export const Boxes = () => {
-    const win: ExperimentWindow = window
-    win.boxesActive = true
+    const active: boolean = useSelector((state: RootState) => state.boxes.enabled)
+    const animationRef = useRef<boolean>()
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [canvasContext, setCanvasContext] = useState<CanvasRenderingContext2D>(null)
+    const canvasContextRef = useRef<CanvasRenderingContext2D>(null)
+    const lastFrameDrawnAtRef = useRef<DOMHighResTimeStamp>(null)
+    const dispatch = useDispatch()
     const fpsManager = new FPS()
-    let lastFrameDrawnAt: DOMHighResTimeStamp = null
     const shapeManager = new ShapeManager()
     shapeManager.addDefaultShapes()
 
     // Helpers
     const clearCanvas = () => {
-        canvasContext.fillStyle = 'white'
-        canvasContext.fillRect(0, 0, 640, 480)
+        canvasContextRef.current.fillStyle = 'white'
+        canvasContextRef.current.fillRect(0, 0, 640, 480)
     }
     const pageVisibilityHandler = () => {
         if(document.hidden) {
-            fpsManager.stop()
-            win.boxesActive = false
+            dispatch(disable())
         } else {
-            lastFrameDrawnAt = null
-            fpsManager.start()
-            win.boxesActive = true
-            // window.requestAnimationFrame(animateFn)
+            setTimeout(() => {
+                dispatch(enable())
+            }, 50)
         }
     }
 
@@ -52,12 +50,12 @@ export const Boxes = () => {
      * 480 in 2 seconds = 480 / 2000 = 0.24 per ms
      */
     const animateFn = (ts: DOMHighResTimeStamp) => {
-        if(!lastFrameDrawnAt) {
-            lastFrameDrawnAt = ts
+        if(!lastFrameDrawnAtRef.current) {
+            lastFrameDrawnAtRef.current = ts
         }
         // Time in ms since the last frame draw
-        const msSinceLastDraw = ts - lastFrameDrawnAt
-        lastFrameDrawnAt = ts
+        const msSinceLastDraw = ts - lastFrameDrawnAtRef.current
+        lastFrameDrawnAtRef.current = ts
         clearCanvas()
         shapeManager.getShapes().forEach((shape, index) => {
             // Calculate new positions
@@ -75,8 +73,8 @@ export const Boxes = () => {
             // Update the shape
             shapeManager.updateShape(index, newX, newY, newLRDirection, newUDDirection)
             // Aaaand draw it
-            canvasContext.fillStyle = shape.color
-            canvasContext.fillRect(
+            canvasContextRef.current.fillStyle = shape.color
+            canvasContextRef.current.fillRect(
                 Math.floor(newX), // Round down, but only for drawing
                 Math.floor(newY),
                 shape.size,
@@ -84,29 +82,40 @@ export const Boxes = () => {
             )
         })
         fpsManager.frameDrawn()
-        if(win.boxesActive) {
+        if(animationRef.current) {
             window.requestAnimationFrame(animateFn)
         }
     }
 
+    // Need to keep updating the canvas context if we re-render
     useEffect(() => {
-        if(canvasContext !== null) {
+        canvasContextRef.current = canvasRef.current.getContext("2d")
+    }, [canvasRef.current])
+
+    useEffect(() => {
+        if(!animationRef.current && active && canvasContextRef.current) {
+            lastFrameDrawnAtRef.current = null
             fpsManager.start()
             window.requestAnimationFrame(animateFn)
         }
-    }, [canvasContext])
+        if(!active) {
+            fpsManager.stop()
+            lastFrameDrawnAtRef.current = null
+        }
+        animationRef.current = active
+    }, [active, canvasContextRef.current])
 
     // Run once on render to set context
     useEffect(() => {
         document.addEventListener("visibilitychange", pageVisibilityHandler)
-        setCanvasContext(canvasRef.current.getContext("2d"))
+        dispatch(enable())
         // Unmount
         return () => {
             document.removeEventListener("visibilitychange", pageVisibilityHandler)
             fpsManager.stop()
-            win.boxesActive = false
+            dispatch(disable())
         }
-    })
+    }, [])
 
     return <S.Container>
         <S.Canvas height={480} ref={canvasRef} width={640} />

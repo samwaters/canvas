@@ -1,9 +1,8 @@
-import {store} from "../store";
-import { updateFPSAction } from "store/fps.store";
+import { store } from "../store";
+import {setTimerId, updateFPSAction} from "store/fps.store";
 
 export class FPS {
     private framesDrawn: number = 0
-    private timerId: number = 0
 
     frameDrawn() {
         this.framesDrawn++
@@ -14,13 +13,16 @@ export class FPS {
     }
 
     start() {
-        this.timerId = window.setInterval(() => {
+        // Cancel any existing timer
+        this.stop()
+        const timerId: number = window.setInterval(() => {
             store.dispatch(updateFPSAction(this.framesDrawn))
             this.framesDrawn = 0
         }, 1000)
+        store.dispatch(setTimerId(timerId))
     }
 
     stop() {
-        window.clearInterval(this.timerId)
+        window.clearInterval(store.getState().fps.timerId)
     }
 }

@@ -1,7 +1,8 @@
 import * as React from 'react'
 import styled from "styled-components";
-import {useState} from "react";
-import {ExperimentWindow} from "components/experiments/boxes/boxes";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import { disable, enable } from "store/boxes.store";
 
 const S = {
     Button: styled.button``,
@@ -19,11 +20,11 @@ const S = {
 }
 
 export const BoxesControls = () => {
-    const [isActive, setIsActive] = useState(true)
+    const dispatch = useDispatch()
+    const isActive: boolean = useSelector((state: RootState) => state.boxes.enabled)
     const handleAnimationClick = () => {
-        const win: ExperimentWindow = window
-        win.boxesActive = !isActive
-        setIsActive(!isActive)
+        const action = isActive ? disable : enable
+        dispatch(action())
     }
     return <>
         <S.Section>
