@@ -25,9 +25,8 @@ export const Boxes = () => {
     const canvasContextRef = useRef<CanvasRenderingContext2D>(null)
     const lastFrameDrawnAtRef = useRef<DOMHighResTimeStamp>(null)
     const dispatch = useDispatch()
-    const fpsManager = new FPS()
-    const shapeManager = new ShapeManager()
-    shapeManager.addDefaultShapes()
+    const fpsManagerRef = useRef(new FPS())
+    const shapeManagerRef = useRef(new ShapeManager())
 
     // Helpers
     const clearCanvas = () => {
@@ -57,7 +56,7 @@ export const Boxes = () => {
         const msSinceLastDraw = ts - lastFrameDrawnAtRef.current
         lastFrameDrawnAtRef.current = ts
         clearCanvas()
-        shapeManager.getShapes().forEach((shape, index) => {
+        shapeManagerRef.current.getShapes().forEach((shape, index) => {
             // Calculate new positions
             const newX = shape.x + msSinceLastDraw * shape.speed.lr * shape.direction.lr
             const newY = shape.y + msSinceLastDraw * shape.speed.ud * shape.direction.ud
@@ -65,7 +64,7 @@ export const Boxes = () => {
             const newLRDirection = newX <= 0 ? 1 : newX + shape.size >= 640 ? -1 : shape.direction.lr
             const newUDDirection = newY <= 0 ? 1 : newY + shape.size >= 480 ? -1 : shape.direction.ud
             // Update the shape
-            shapeManager.updateShape(index, newX, newY, newLRDirection, newUDDirection)
+            shapeManagerRef.current.updateShape(index, newX, newY, newLRDirection, newUDDirection)
             // Aaaand draw it
             canvasContextRef.current.fillStyle = shape.color
             canvasContextRef.current.fillRect(
@@ -75,7 +74,7 @@ export const Boxes = () => {
                 shape.size
             )
         })
-        fpsManager.frameDrawn()
+        fpsManagerRef.current.frameDrawn()
         if (animationRef.current) {
             window.requestAnimationFrame(animateFn)
         }
@@ -89,11 +88,11 @@ export const Boxes = () => {
     useEffect(() => {
         if (!animationRef.current && active && canvasContextRef.current) {
             lastFrameDrawnAtRef.current = null
-            fpsManager.start()
+            fpsManagerRef.current.start()
             window.requestAnimationFrame(animateFn)
         }
         if (!active) {
-            fpsManager.stop()
+            fpsManagerRef.current.stop()
             lastFrameDrawnAtRef.current = null
         }
         animationRef.current = active
@@ -102,11 +101,12 @@ export const Boxes = () => {
     // Run once on render to set context
     useEffect(() => {
         document.addEventListener('visibilitychange', pageVisibilityHandler)
+        shapeManagerRef.current.addDefaultShapes()
         dispatch(enable())
         // Unmount
         return () => {
             document.removeEventListener('visibilitychange', pageVisibilityHandler)
-            fpsManager.stop()
+            fpsManagerRef.current.stop()
             dispatch(disable())
         }
     }, [])
