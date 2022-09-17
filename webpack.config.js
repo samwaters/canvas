@@ -14,8 +14,15 @@ module.exports = {
     entry: {
         app: APP_DIR + '/index.tsx',
         vendor: [
-            '@reduxjs/toolkit', '@redux-saga/core', 'react', 'react-dom', 'react-redux', 'react-router', 'redux', 'styled-components'
-        ]
+            '@reduxjs/toolkit',
+            '@redux-saga/core',
+            'react',
+            'react-dom',
+            'react-redux',
+            'react-router',
+            'redux',
+            'styled-components',
+        ],
     },
     mode: process.env.NODE_ENV || 'development',
     module: {
@@ -36,9 +43,7 @@ module.exports = {
         filename: '[name].prod.js',
         path: BUILD_DIR,
     },
-    plugins: [
-        new ESLintPlugin(),
-    ],
+    plugins: [new ESLintPlugin()],
     resolve: {
         alias: {
             components: path.resolve(__dirname, 'src', 'components'),

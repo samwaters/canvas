@@ -11,15 +11,16 @@ export const sagaMiddleware = createSagaMiddleware()
 export const history = createBrowserHistory()
 
 export const store = configureStore({
-    middleware: getDefaultMiddleware => getDefaultMiddleware({
-        thunk: false
-    }).concat(sagaMiddleware, logger, routerMiddleware(history)),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            thunk: false,
+        }).concat(sagaMiddleware, logger, routerMiddleware(history)),
     reducer: {
         bootstrap: bootstrapReducer,
         boxes: boxesReducer,
         fps: fpsReducer,
-        router: connectRouter(history)
-    }
+        router: connectRouter(history),
+    },
 })
 
 export type RootState = ReturnType<typeof store.getState>

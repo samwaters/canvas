@@ -1,8 +1,8 @@
-import { store } from "../store";
-import {setTimerId, updateFPSAction} from "store/fps.store";
+import { store } from '../store'
+import { setTimerId, updateFPSAction } from 'store/fps.store'
 
 export class FPS {
-    private framesDrawn: number = 0
+    private framesDrawn = 0
 
     frameDrawn() {
         this.framesDrawn++

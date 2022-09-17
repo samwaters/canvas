@@ -12,15 +12,15 @@ interface ErrorBoundaryState {
 
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
     constructor(props) {
-        super(props);
-        this.state = { error: "", hasError: false };
+        super(props)
+        this.state = { error: '', hasError: false }
     }
 
     static getDerivedStateFromError(e: Error) {
-        return { error: e.message, hasError: true };
+        return { error: e.message, hasError: true }
     }
 
     render() {
-        return this.state.hasError ? <Error>{this.props.children}</Error> : this.props.children;
+        return this.state.hasError ? <Error>{this.props.children}</Error> : this.props.children
     }
 }

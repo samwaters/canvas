@@ -5,17 +5,19 @@ export interface BootstrapState {
 }
 
 const initialState: BootstrapState = {
-    ready: false
+    ready: false,
 }
 
 const bootstrapSlice = createSlice({
     initialState,
     name: 'bootstrap',
     reducers: {
-        ready: (state) => { state.ready = true }
-    }
+        ready: (state) => {
+            state.ready = true
+        },
+    },
 })
 
-export const bootstrapAction = createAction("bootstrap/bootstrap")
+export const bootstrapAction = createAction('bootstrap/bootstrap')
 export const { ready } = bootstrapSlice.actions
 export default bootstrapSlice.reducer

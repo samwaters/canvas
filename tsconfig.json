@@ -1,18 +1,16 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "module": "commonjs",
-    "target": "es5",
-    "sourceMap": true,
-    "jsx": "react",
-    "paths": {
-      "components/*": ["src/components/*"],
-      "sagas/*": ["src/sagas/*"],
-      "store/*": ["src/store/*"],
-      "theme/*": ["src/theme/*"]
-    }
-  },
-  "exclude": [
-    "node_modules"
-  ]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "module": "commonjs",
+        "target": "es5",
+        "sourceMap": true,
+        "jsx": "react",
+        "paths": {
+            "components/*": ["src/components/*"],
+            "sagas/*": ["src/sagas/*"],
+            "store/*": ["src/store/*"],
+            "theme/*": ["src/theme/*"]
+        }
+    },
+    "exclude": ["node_modules"]
 }

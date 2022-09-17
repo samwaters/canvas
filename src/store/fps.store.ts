@@ -1,4 +1,4 @@
-import {createAction, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface FPSState {
     currentFPS: number
@@ -9,7 +9,7 @@ export interface FPSState {
 const initialState: FPSState = {
     currentFPS: 0,
     fpsHistory: [],
-    timerId: -1
+    timerId: -1,
 }
 
 const fpsSlice = createSlice({
@@ -24,10 +24,10 @@ const fpsSlice = createSlice({
             const history = state.fpsHistory.slice(-9)
             history.push(action.payload)
             state.fpsHistory = history
-        }
-    }
+        },
+    },
 })
 
-export const setTimerId = createAction<number>("fps/setTimerId")
-export const updateFPSAction = createAction<number>("fps/update")
+export const setTimerId = createAction<number>('fps/setTimerId')
+export const updateFPSAction = createAction<number>('fps/update')
 export default fpsSlice.reducer
